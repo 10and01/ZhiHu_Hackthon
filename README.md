@@ -54,22 +54,22 @@ npm install
 
 ```bash
 # 数据库
-DATABASE_URL="file:./dev.db"
-NEXTAUTH_SECRET="你的随机密钥"
-NEXTAUTH_URL="http://localhost:3000"
+DATABASE_URL="<your-database-url>"
+NEXTAUTH_SECRET="<your-random-secret>"
+NEXTAUTH_URL="<your-app-url>"
 
 # 知乎 OAuth（在知乎开放平台申请）
-ZHIHU_APP_ID="your_app_id"
-ZHIHU_APP_KEY="your_app_key"
-ZHIHU_APP_SECRET="your_app_secret"
-ZHIHU_REDIRECT_URI="http://localhost:3000/api/auth/callback/zhihu"
+ZHIHU_APP_ID="<your-zhihu-app-id>"
+ZHIHU_APP_KEY="<your-zhihu-app-key>"
+ZHIHU_APP_SECRET="<your-zhihu-app-secret>"
+ZHIHU_REDIRECT_URI="<your-app-url>/api/auth/callback/zhihu"
 
 # AI API（可选，不填则使用演示模板）
-OPENAI_API_KEY="sk-..."
-# 或 ANTHROPIC_API_KEY="sk-ant-..."
+OPENAI_API_KEY="<your-openai-key>"
+# 或 ANTHROPIC_API_KEY="<your-anthropic-key>"
 ```
 
-**注意**：知乎 OAuth 的 `redirect_uri` 需配置为 `http://localhost:3000/api/auth/callback/zhihu`
+**注意**：知乎 OAuth 的 `redirect_uri` 需配置为 `<your-app-url>/api/auth/callback/zhihu`
 
 ### 3. 初始化数据库
 
