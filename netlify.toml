@@ -6,5 +6,9 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
 
+[functions]
+  # Pro 计划最大 26 秒，Starter 计划最大 10 秒（配置无效但不会报错）
+  timeout = 26
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"

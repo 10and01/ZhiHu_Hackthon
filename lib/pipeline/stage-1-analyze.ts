@@ -96,7 +96,7 @@ async function analyzeStory(
 ${sampleText}`;
 
   const raw = await callLLM(provider, apiKey, prompt, {
-    maxTokens: 2048,
+    maxTokens: 1536,
     temperature: 0.8,
     topP: 0.95,
   });
@@ -226,7 +226,7 @@ async function analyzeArticle(
 ${sampleText}`;
 
   const raw = await callLLM(provider, apiKey, prompt, {
-    maxTokens: 2048,
+    maxTokens: 1536,
     temperature: 0.7,
     topP: 0.95,
   });

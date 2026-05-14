@@ -9,12 +9,19 @@ import { getStylePresetByGenre } from "../style-presets";
 
 export async function generateStyleDNA(
   stage1: Stage1Result,
-  apiKey: string,
-  provider: AiProvider
+  _apiKey: string,
+  _provider: AiProvider
 ): Promise<StyleDNA> {
+  // 生产环境跳过 LLM 风格生成，直接使用本地预设（避免 serverless 超时）
+  // 如需动态风格，可在本地开发时通过环境变量启用
+  if (process.env.NODE_ENV === "production" || process.env.SKIP_STYLE_LLM === "true") {
+    console.log("[Stage 2] 使用本地预设风格（跳过 LLM）");
+    return fallbackDNA(stage1);
+  }
+
   try {
     const prompt = buildStylePrompt(stage1);
-    const result = await callLLM(provider, apiKey, prompt, {
+    const result = await callLLM(_provider, _apiKey, prompt, {
       maxTokens: 1024,
       temperature: 0.9,
       topP: 0.95,
