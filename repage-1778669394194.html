@@ -1,0 +1,4199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秦始皇登月计划 · 知乎故事重塑工坊</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+
+<style>
+/* ===== 设计系统变量 ===== */
+:root {
+  --primary: #FF2A6D;
+  --secondary: #05D9E8;
+  --bg: #0D0221;
+  --text: #D1D5DB;
+  --accent: #FF2A6D;
+  
+  /* 情绪驱动变量（动态更新） */
+  --current-intensity: 0.5;
+  --current-valence: 0;
+  --current-arousal: 0.5;
+  --fx-intensity: 0.8;
+  
+  /* 字体 */
+  --font-heading: 'Noto Serif SC', serif;
+  --font-body: 'Noto Sans SC', sans-serif;
+  --font-special: 'ZCOOL XiaoWei', serif;
+  
+  
+  --char-protagonist-color: #05D9E8;
+  --char-protagonist-bg: #05D9E820;
+
+  --char-antagonist-color: #A78BFA;
+  --char-antagonist-bg: #A78BFA20;
+
+  --char-char_1-color: #DC2626;
+  --char-char_1-bg: #DC262620;
+}
+
+/* ===== 基础重置 ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body), 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ===== 场景系统 ===== */
+.scene {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter-cover {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.chapter-content {
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+}
+
+/* ===== 情绪驱动样式 ===== */
+.emotion-text {
+  font-size: calc(1rem + var(--current-intensity) * var(--fx-intensity) * 0.5rem);
+  font-weight: calc(400 + var(--current-intensity) * var(--fx-intensity) * 400);
+  letter-spacing: calc(var(--current-arousal) * var(--fx-intensity) * 0.05em);
+  line-height: calc(1.6 + (1 - var(--current-arousal)) * 0.4);
+  color: var(--text);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emotion-text.negative {
+  color: var(--primary);
+}
+
+.emotion-text.positive {
+  color: var(--secondary);
+}
+
+/* ===== 文本效果 ===== */
+.text-glow {
+  text-shadow: 0 0 calc(20px * var(--fx-intensity)) var(--primary),
+               0 0 calc(40px * var(--fx-intensity)) var(--primary);
+}
+
+.text-pulse {
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.text-shake {
+  animation: textShake 0.5s ease-in-out infinite;
+}
+
+@keyframes textShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* ===== 背景效果 ===== */
+.bg-mist {
+  position: relative;
+}
+.bg-mist::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 70%, #FF2A6D30 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, #05D9E820 0%, transparent 40%);
+  animation: mistFloat 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mistFloat {
+  0%, 100% { opacity: 0.6; transform: translateY(0); }
+  50% { opacity: 0.9; transform: translateY(-10px); }
+}
+
+.bg-heartbeat {
+  animation: bgHeartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes bgHeartbeat {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.15); }
+}
+
+/* ===== 滚动揭示动画 ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ===== 导航 ===== */
+.scene-nav {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scene-nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.scene-nav-dot:hover {
+  background: rgba(255,255,255,0.6);
+  transform: scale(1.2);
+}
+
+.scene-nav-dot.active {
+  background: var(--primary);
+  transform: scale(1.4);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+/* ===== 情绪脉搏（底部） ===== */
+.emotion-pulse {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emotion-pulse svg {
+  width: 200px;
+  height: 30px;
+}
+
+.emotion-pulse-cursor {
+  fill: var(--primary);
+  transition: cx 0.5s ease;
+}
+
+/* ===== TTS 播放器 ===== */
+.tts-player {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.tts-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.tts-btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.tts-progress {
+  width: 100px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  outline: none;
+}
+
+.tts-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+/* ===== 角色卡片 ===== */
+.character-card {
+  border: 1px solid var(--char-color, var(--primary));
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 480px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.character-card:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-2px);
+}
+
+.character-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.character-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+}
+
+.character-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.character-role {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--char-color, var(--primary));
+  color: white;
+  opacity: 0.8;
+}
+
+.character-body {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.character-body.expanded {
+  max-height: 300px;
+  opacity: 1;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--char-color, var(--primary));
+}
+
+.character-trait {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--char-color, var(--primary));
+  color: white;
+  font-size: 0.875rem;
+  margin: 0.25rem;
+  opacity: 0.8;
+}
+
+/* ===== 对话气泡 ===== */
+.dialogue-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.dialogue-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.dialogue-row.left { flex-direction: row; }
+.dialogue-row.right { flex-direction: row-reverse; }
+
+.dialogue-bubble {
+  max-width: 75%;
+  padding: 0.875rem 1.25rem;
+  border-radius: 1rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.dialogue-bubble.left {
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-bottom-left-radius: 0.25rem;
+}
+
+.dialogue-bubble.right {
+  background: rgba(255, 42, 109, 0.12);
+  border: 1px solid rgba(255, 42, 109, 0.25);
+  border-bottom-right-radius: 0.25rem;
+}
+
+.dialogue-speaker {
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.6;
+  margin-bottom: 0.25rem;
+}
+
+/* ===== 情绪峰值页 ===== */
+.impact-text {
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.impact-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* ===== 章节标题 ===== */
+.chapter-number {
+  font-size: 0.875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 1rem;
+}
+
+.chapter-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.chapter-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+/* ===== 全局动画 ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(60px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-60px); }
+}
+
+
+  .emotion-kf-0 {
+    --kf-intensity: 0.6;
+    --kf-valence: 0.2;
+    --kf-arousal: 0.7;
+  }
+
+  .emotion-kf-1 {
+    --kf-intensity: 0.8;
+    --kf-valence: -0.5;
+    --kf-arousal: 0.9;
+  }
+
+  .emotion-kf-2 {
+    --kf-intensity: 0.9;
+    --kf-valence: -0.7;
+    --kf-arousal: 1;
+  }
+
+  .emotion-kf-3 {
+    --kf-intensity: 0.7;
+    --kf-valence: 0.1;
+    --kf-arousal: 0.6;
+  }
+
+  .emotion-kf-4 {
+    --kf-intensity: 1;
+    --kf-valence: 0.8;
+    --kf-arousal: 0.9;
+  }
+
+  .emotion-kf-5 {
+    --kf-intensity: 0.9;
+    --kf-valence: 0.9;
+    --kf-arousal: 0.8;
+  }
+
+  .emotion-kf-6 {
+    --kf-intensity: 1;
+    --kf-valence: 1;
+    --kf-arousal: 0.7;
+  }
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .chapter-content { padding: 2rem 1rem; }
+  .scene-nav { right: 0.5rem; }
+  .tts-player {
+    bottom: 0.5rem;
+    right: 0.5rem;
+    left: 0.5rem;
+    justify-content: center;
+  }
+  .emotion-pulse { display: none; }
+  .character-card { margin: 1rem; }
+}
+
+/* ===== 打印 ===== */
+@media print {
+  .scene-nav, .emotion-pulse, .tts-player { display: none !important; }
+  .scene { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- 场景容器 -->
+<main id="story-container">
+
+<section class="scene chapter-cover" data-scene="scene-cover" data-emotion-idx="0" data-chapter="-1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(135deg, #0D0221 0%, #1A0B2E 50%, #2D1B4E 100%);
+  "></div>
+  <div class="absolute inset-0 bg-mist opacity-60"></div>
+  
+  <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+    <div class="reveal">
+      <p class="text-sm tracking-[0.3em] uppercase mb-6" style="color: #05D9E8">
+        悬疑
+      </p>
+    </div>
+    
+    <h1 class="reveal reveal-delay-1 impact-text text-glow" style="
+      font-family: var(--font-heading);
+      color: #FF2A6D;
+      margin-bottom: 1.5rem;
+    ">
+      秦始皇登月计划
+    </h1>
+    
+    <div class="reveal reveal-delay-2">
+      <p class="text-lg mb-2" style="color: #D1D5DB; opacity: 0.8">
+        未知作者
+      </p>
+      <p class="text-sm max-w-md mx-auto" style="color: #D1D5DB; opacity: 0.5">
+        未知主题
+      </p>
+    </div>
+    
+    <div class="reveal reveal-delay-3 mt-12">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border" style="
+        border-color: #FF2A6D40;
+        color: #05D9E8;
+        font-size: 0.875rem;
+      ">
+        <span>↓</span>
+        <span>滚动进入故事</span>
+      </div>
+    </div>
+    
+    <div class="reveal reveal-delay-4 mt-8 flex justify-center gap-3 flex-wrap">
+      
+        <span class="px-3 py-1 rounded-full text-xs" style="
+          background: #FF2A6D15;
+          color: #FF2A6D;
+          border: 1px solid #FF2A6D30;
+        ">窒息</span>
+      
+        <span class="px-3 py-1 rounded-full text-xs" style="
+          background: #FF2A6D15;
+          color: #FF2A6D;
+          border: 1px solid #FF2A6D30;
+        ">未知</span>
+      
+        <span class="px-3 py-1 rounded-full text-xs" style="
+          background: #FF2A6D15;
+          color: #FF2A6D;
+          border: 1px solid #FF2A6D30;
+        ">偏执</span>
+      
+        <span class="px-3 py-1 rounded-full text-xs" style="
+          background: #FF2A6D15;
+          color: #FF2A6D;
+          border: 1px solid #FF2A6D30;
+        ">脆弱</span>
+      
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-char-protagonist" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="background: #0D0221"></div>
+  
+  <div class="relative z-10 flex items-center justify-center min-h-screen px-4 py-16">
+    <div class="character-card" style="--char-color: #05D9E8">
+      <div class="character-header" onclick="toggleCharacterCard(this)">
+        <div class="character-avatar" style="background: linear-gradient(135deg, #05D9E8, #05D9E888)">
+          💻
+        </div>
+        <div class="flex-1">
+          <div class="character-name" style="color: #05D9E8">穿越者（第一人称“我”）</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="character-role">主角</span>
+            <span class="text-xs" style="color: #D1D5DB; opacity: 0.4">点击展开档案 ▼</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="character-body">
+        
+        <div class="mb-3 text-sm" style="color: #D1D5DB; opacity: 0.7">
+          <strong>视觉符号：</strong>系统界面
+        </div>
+        
+        
+        
+        <div class="mb-3 text-sm" style="color: #D1D5DB; opacity: 0.7">
+          <strong>角色弧线：</strong>从意外穿越到赢得秦始皇信任，开启登月计划。
+        </div>
+        
+        
+        <div class="flex flex-wrap gap-1 mt-3">
+          
+            <span class="character-trait" style="--char-color: #05D9E8">机智</span>
+          
+            <span class="character-trait" style="--char-color: #05D9E8">果断</span>
+          
+            <span class="character-trait" style="--char-color: #05D9E8">善用系统</span>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-char-antagonist" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="background: #0D0221"></div>
+  
+  <div class="relative z-10 flex items-center justify-center min-h-screen px-4 py-16">
+    <div class="character-card" style="--char-color: #A78BFA">
+      <div class="character-header" onclick="toggleCharacterCard(this)">
+        <div class="character-avatar" style="background: linear-gradient(135deg, #A78BFA, #A78BFA88)">
+          🐉
+        </div>
+        <div class="flex-1">
+          <div class="character-name" style="color: #A78BFA">秦始皇</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="character-role">主角</span>
+            <span class="text-xs" style="color: #D1D5DB; opacity: 0.4">点击展开档案 ▼</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="character-body">
+        
+        <div class="mb-3 text-sm" style="color: #D1D5DB; opacity: 0.7">
+          <strong>视觉符号：</strong>紫黑色绣龙华服
+        </div>
+        
+        
+        
+        <div class="mb-3 text-sm" style="color: #D1D5DB; opacity: 0.7">
+          <strong>角色弧线：</strong>从濒死帝王到重燃征服世界与星辰的野心。
+        </div>
+        
+        
+        <div class="flex flex-wrap gap-1 mt-3">
+          
+            <span class="character-trait" style="--char-color: #A78BFA">威严</span>
+          
+            <span class="character-trait" style="--char-color: #A78BFA">多疑</span>
+          
+            <span class="character-trait" style="--char-color: #A78BFA">雄才大略</span>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-ch0-cover" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #1A0B2E 60%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 text-center px-6">
+    <div class="reveal">
+      <p class="chapter-number">CHAPTER 01</p>
+    </div>
+    
+    <h2 class="reveal reveal-delay-1 chapter-title" style="color: #D1D5DB">
+      穿越降临与系统绑定
+    </h2>
+    
+    <div class="reveal reveal-delay-2">
+      <div class="chapter-divider mx-auto"></div>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-3 mt-6">
+      <p class="text-sm max-w-sm mx-auto" style="color: #D1D5DB; opacity: 0.5">
+        穿越者醒来，系统要求帮秦始皇登月。
+      </p>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-4 mt-10">
+      <span class="inline-block w-6 h-10 border-2 border-white/20 rounded-full relative">
+        <span class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-2 bg-white/40 rounded-full animate-bounce"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p0" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    "># 秦始皇登月计划</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">**作者**: 六酒</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">**章节**: 秦始皇登月计划</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p3" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">**标签**</div>
+          <div>科幻, 脑洞, 穿越, 爽文, 历史</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">**导语**</div>
+          <div>一觉醒来，我自带系统穿越到秦始皇身边。还可以凭借好感度兑换物品。我直接就是一个滑跪。「陛下，此乃世界地图！」秦始皇好感度+100。「陛下，此物可令人上天揽月，成仙人之举！」秦始皇好感度爆表。「细说上天</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>## 正文</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p6" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">一觉醒来，我自带系统穿越到秦始皇身边。</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">还可以凭借好感度兑换物品。</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">我直接就是一个滑跪。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p9" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下，此乃世界地图！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇好感度+100。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下，此物可令人上天揽月，成仙人之举！」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p12" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇好感度爆表。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「细说上天。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p15" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">一辆摇摇晃晃的马车里。</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">我面前躺着一个身穿紫黑色绣龙华服的男人。</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">他双目紧闭，脸色苍白，气若游丝。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p18" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">但依然掩盖不住此人眉宇间的帝王英气。</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">我愣了几秒钟，意识到自己八成是穿越了。</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">我异常兴奋，摩拳擦掌，心想终于可以大显身手了。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p21" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我自幼熟读各类穿越文、系统文、重生文。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>废寝忘食，通宵达旦，凿壁偷光，等的就是今天！</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">因此我自信满满地对系统说</div>
+          <div>「来吧，我的任务是什么？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p24" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">系统</div>
+          <div>「帮秦始皇登月。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">我</div>
+          <div>「？」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我靠，等一下。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p27" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">你们这个穿越讲不讲基本法啊！</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">搁这儿拍科幻大片呢？</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">系统连忙安慰我。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p30" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「别慌，你可以凭借跟秦始皇的好感度兑换物品。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「好感度越高，能兑换的物品就越多。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我这才稍微松了口气。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p33" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">满怀期待地打开兑换面板，可商店里只有一瓶西地那非，一本《华夏上下五千年》，以及一罐可乐。</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">还是百事的。</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">这都什么乱七八糟的玩意！</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p36" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">最过分的是，这三样东西都需要 10 点好感度兑换。</p>
+
+    <p class="reveal reveal-delay-2 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">而右下角显示，我目前的好感度是：</p>
+
+    <p class="reveal reveal-delay-3 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">-10。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch0-p39" data-emotion-idx="0" data-chapter="0">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 emotion-text mb-6" style="
+      text-indent: 2em;
+    ">这我玩尼玛！</p>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-ch1-cover" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #1A0B2E 60%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 text-center px-6">
+    <div class="reveal">
+      <p class="chapter-number">CHAPTER 02</p>
+    </div>
+    
+    <h2 class="reveal reveal-delay-1 chapter-title" style="color: #D1D5DB">
+      初见始皇与药救危机
+    </h2>
+    
+    <div class="reveal reveal-delay-2">
+      <div class="chapter-divider mx-auto"></div>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-3 mt-6">
+      <p class="text-sm max-w-sm mx-auto" style="color: #D1D5DB; opacity: 0.5">
+        穿越者跪献西地那非，李斯闯入欲杀之。
+      </p>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-4 mt-10">
+      <span class="inline-block w-6 h-10 border-2 border-white/20 rounded-full relative">
+        <span class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-2 bg-white/40 rounded-full animate-bounce"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p0" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>就在我忍不住爆粗时，我面前的秦始皇悠悠转醒。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">他勉强睁开眼，扭头瞥向我，语气虚弱地问道</div>
+          <div>「你是何人？」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">还没等我开口，秦始皇兀自继续说</div>
+          <div>「来杀我的刺客？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p3" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我十分利索地跪倒在秦始皇面前。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「陛下误会了。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「您作为千古一帝，功盖千秋，名传万世。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p6" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「我受仙人指点，从后世穿越而来。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「特意为始皇帝续命！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">当我慷慨激昂地说完这番话后，我收到了系统提示</div>
+          <div>秦始皇好感度+20。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p9" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">我没有丝毫迟疑，立即兑换了一瓶西地那非。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">2</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">如果我的猜测没错，此时应该正值秦始皇最后一次东巡。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p12" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">依照史书的记载，秦始皇最终病死在了这次东巡的路上。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">而关于秦始皇的病因，史书上并没有明确记载。</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">有一种说法是秦始皇常年奔波劳累，导致他心脏不好。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p15" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">但不管怎么样，兑换商店里只有西地那非这一种药。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">哪怕是死马当活马医，也要先把秦始皇的命保下来再说。</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">于是我恭恭敬敬地说道：</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p18" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「陛下，此乃仙人所赐的灵丹妙药。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「服用后，有延年益寿，强健体魄的功效。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>然而我话音刚落，车外忽然传来一个男人的声音。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p21" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #DC2626, #DC262688);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">⚔️</div>
+        <div class="dialogue-bubble left" style="
+          background: #DC262618; border-color: #DC262630;
+        ">
+          <div class="dialogue-speaker" style="color: #DC2626">李斯</div>
+          <div>「陛下，微臣李斯，有要事禀报。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我心里陡然一惊。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>还没等我反应过来，身后的车门便已经被人直接推开。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p24" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>一个穿着黑色官服的男人俯身站在门外，与我面面相觑。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「你、你是何人！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>李斯见了我，大惊失色。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p27" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「禁卫军何在！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>随着李斯一声怒喝，外面顿时围上来一群手持枪戈的铁甲士兵。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>李斯抽出腰间佩剑，如临大敌一般用剑尖指着我。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p30" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「大胆刺客！还不速速就擒！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>这时榻上的秦始皇强撑起上半身，朝李斯一挥手。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「你们姑且都先退下。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p33" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>李斯见到秦始皇坐起身，愣了一下。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>他脸上掠过一丝不太自然的慌张，急忙说道。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「陛下，此人来历不明，又身着奇装异服。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p36" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「保不齐是南蛮百越之地的刺客，理应当场处死啊！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>然而秦始皇没有理会李斯，只是淡淡地说：</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「倘若此人真是刺客，恐怕朕早就不知道死过几次了。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p39" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>李斯闻言浑身一抖，被吓得面如土色。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>他自然能听出秦始皇话里的意思，连忙丢掉手里的长剑，惊惶地跪到秦始皇面前。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「臣护卫不力，罪该万死，请陛下责罚！」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p42" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇满脸倦意，摆了摆手。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「把药留下，你们都退下去吧。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>李斯还不肯放弃，劝阻道。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p45" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「可是此人来路不明，万一药里……」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>他的话还没说完，就被秦始皇打断了。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #DC2626, #DC262688);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">⚔️</div>
+        <div class="dialogue-bubble left" style="
+          background: #DC262618; border-color: #DC262630;
+        ">
+          <div class="dialogue-speaker" style="color: #DC2626">李斯</div>
+          <div>「李斯，你听不懂朕的话吗？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p48" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">这一下李斯不敢再多言，只得咬牙说了句</div>
+          <div>「诺。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>临走前，李斯还不忘狠狠剜了我一眼。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>那眼神恨不得将我碎尸万段。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p51" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">3</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">等李斯退出去以后，秦始皇的身子猛地松垮下来。</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">他脸色青紫，看起来已经快要油尽灯枯了。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p54" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我刚想要上前搀扶，却被他拦住了。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「朕自知已经时日无多。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row left reveal reveal-delay-3">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「无论这药是真是假，朕都愿意试一试。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p57" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">说完，他强撑着接过我递上去的小药片，几乎没有任何迟疑，直接吞服了下去。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">我看着重新闭上双眼的秦始皇，心里同样忐忑不安。</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">此刻我的身家性命全寄托在那枚小药片上。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p60" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">要是秦始皇有个三长两短，我肯定也难逃一死。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">……</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">不知等了多久，榻上的秦始皇呻吟一声，慢悠悠地坐了起来。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch1-p63" data-emotion-idx="1" data-chapter="1">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">这次他脸上恢复了一些血色。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">我悬着的心这才放下。</p>
+
+    <p class="reveal reveal-delay-3 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">系统提示：秦始皇好感度+50。</p>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-ch2-cover" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #1A0B2E 60%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 text-center px-6">
+    <div class="reveal">
+      <p class="chapter-number">CHAPTER 03</p>
+    </div>
+    
+    <h2 class="reveal reveal-delay-1 chapter-title" style="color: #D1D5DB">
+      药效显现与地图献宝
+    </h2>
+    
+    <div class="reveal reveal-delay-2">
+      <div class="chapter-divider mx-auto"></div>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-3 mt-6">
+      <p class="text-sm max-w-sm mx-auto" style="color: #D1D5DB; opacity: 0.5">
+        秦始皇服药转危为安，穿越者献世界地图。
+      </p>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-4 mt-10">
+      <span class="inline-block w-6 h-10 border-2 border-white/20 rounded-full relative">
+        <span class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-2 bg-white/40 rounded-full animate-bounce"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-cover bg-heartbeat" data-scene="scene-ch2-p0" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: radial-gradient(circle at center, #05D9E840 0%, #0D0221 70%);
+  "></div>
+  
+  
+  <div class="absolute inset-0" style="
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      #FF2A6D05 2px,
+      #FF2A6D05 4px
+    );
+    animation: scanline 0.1s linear infinite;
+    pointer-events: none;
+  "></div>
+  
+  
+  <div class="relative z-10 impact-container">
+    
+    <p class="reveal reveal-delay-1 impact-text text-pulse" style="
+      color: #FF2A6D;
+      margin-bottom: 2rem;
+    ">同时兑换商店里还解锁了一些其他物品。</p>
+
+    <p class="reveal reveal-delay-2 impact-text text-pulse" style="
+      color: #FF2A6D;
+      margin-bottom: 2rem;
+    ">「看来你没有骗朕，此药确实有效。」</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p2" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇缓了口气，看着我问道。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「既然你说你是受仙人指点，除了此药以外，可还有其他实证？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p4" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我直接又是一个滑跪，双手捧着刚兑换出来的卷轴，朗声道。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下，此乃世界地图！」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p6" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">秦始皇的表情略显微妙，像是勾起了什么不好的回忆。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">他沉吟片刻，弱弱地问道。</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p8" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「你这地图里面，没藏什么不该藏的东西吧？」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「呃……」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p10" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我干脆直接将地图展开，语气铿锵。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下，放眼寰宇，未来都是大秦的疆土！」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p12" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">系统提示：秦始皇好感度+100。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">4</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p14" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇仔细打量着那幅世界地图。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「你刚刚说，这是『世界』地图？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p16" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>半晌后，他的表情逐渐变得凝重起来。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「这世界之大，超乎朕的想象。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p18" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇幽幽地叹了口气，自嘲地苦笑道。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「朕这些年南征百越，北据匈奴，拓土千里，如今看来，简直如井底之蛙一般可笑。跟这所谓的『世界』比起来，如今的大秦与偏居一隅，又有何异？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p20" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">我连忙宽慰道</div>
+          <div>「陛下不必妄自菲薄，以陛下的雄韬伟略，假以时日，世界必定会臣服在我大秦的国威之下。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>「不仅如此，苍穹之外，还有着更为广袤无垠的空间，等着陛下去征服。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p22" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「我此番前来，正是要助陛下一臂之力！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇先是愣了一下，随即一扫先前的阴霾，爽朗地大笑道。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p24" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「说得好！世界再大又有何妨？好小子，你很对朕的口味，朕喜欢你！」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我稍稍松了口气，看来性命至少是保住了。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p26" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>可没想到秦始皇忽然又问道。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「对了，既然你刚刚说，你是从后世穿越而来。那朕问你，在后世，我大秦可开创了万世之基？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p28" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「呃……这个……」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我心里一阵尴尬，踌躇片刻，我从系统商店里兑换出一本《华夏上下五千年》，硬着头皮呈给了秦始皇。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p30" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下，此乃后世的历史读物，上面大致记载了历朝历代的兴衰过往，您还是自己看吧。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇皱着眉头接过去，翻开后才看了没两页，脸色瞬间就变了。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p32" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「我大秦二世就亡了？」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇脸色铁青，一双鹰眸中隐含怒意。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p34" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「而且为何不是扶苏继位，而是胡亥？」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我干脆一狠心，将秦始皇病逝后，赵高联合李斯秘不发丧，并私自拟订遗诏，让胡亥继承皇位，还以秦始皇的名义指责扶苏为子不孝、蒙恬为臣不忠，逼迫他们自杀的经过，一口气全说了一遍。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p36" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇听完，面沉如水，半张脸淹没在车厢的阴影里，薄唇抿成一条线。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #A78BFA, #A78BFA88);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">🐉</div>
+        <div class="dialogue-bubble right" style="
+          background: #A78BFA18; border-color: #A78BFA30;
+        ">
+          <div class="dialogue-speaker" style="color: #A78BFA">秦始皇</div>
+          <div>「哼，扶苏那小子简直是愚忠！」秦始皇看似不悦地哼了一声，又略显无奈地说，「不过这也倒像是他的行事风格。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch2-p38" data-emotion-idx="2" data-chapter="2">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">系统提示：秦始皇好感度+50。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">我不由得在心底感叹。</p>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-ch3-cover" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #1A0B2E 60%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 text-center px-6">
+    <div class="reveal">
+      <p class="chapter-number">CHAPTER 04</p>
+    </div>
+    
+    <h2 class="reveal reveal-delay-1 chapter-title" style="color: #D1D5DB">
+      帝王野心与登月宏愿
+    </h2>
+    
+    <div class="reveal reveal-delay-2">
+      <div class="chapter-divider mx-auto"></div>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-3 mt-6">
+      <p class="text-sm max-w-sm mx-auto" style="color: #D1D5DB; opacity: 0.5">
+        秦始皇被世界地图震撼，决心征服星辰。
+      </p>
+    </div>
+    
+    
+    <div class="reveal reveal-delay-4 mt-10">
+      <span class="inline-block w-6 h-10 border-2 border-white/20 rounded-full relative">
+        <span class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-2 bg-white/40 rounded-full animate-bounce"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-cover bg-heartbeat" data-scene="scene-ch3-p0" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: radial-gradient(circle at center, #05D9E840 0%, #0D0221 70%);
+  "></div>
+  
+  
+  
+  <div class="relative z-10 impact-container">
+    
+    <p class="reveal reveal-delay-1 impact-text text-glow" style="
+      color: #FF2A6D;
+      margin-bottom: 2rem;
+    ">看来这位始皇帝，是真的对扶苏喜爱有加。</p>
+
+    <p class="reveal reveal-delay-2 impact-text text-glow" style="
+      color: #FF2A6D;
+      margin-bottom: 2rem;
+    ">秦始皇问：「小子，你怎么称呼？」</p>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch3-p2" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">我回道</div>
+          <div>「陛下，我名叫周继盛。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>秦始皇略微思索后，开口道。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch3-p4" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #DC2626, #DC262688);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">⚔️</div>
+        <div class="dialogue-bubble left" style="
+          background: #DC262618; border-color: #DC262630;
+        ">
+          <div class="dialogue-speaker" style="color: #DC2626">李斯</div>
+          <div>「有劳周先生，将李斯叫进来，朕要跟他单独谈谈。」</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我隐约猜到了秦始皇要做什么。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch3-p6" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>遵旨离开车厢后，李斯立刻恶狠狠地瞪了过来。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下怎么样了？」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch3-p8" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="dialogue-container">
+      
+      <div class="dialogue-row left reveal reveal-delay-1">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble left" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">叙述</div>
+          <div>我冷冷地瞥了他一眼。</div>
+        </div>
+      </div>
+
+      <div class="dialogue-row right reveal reveal-delay-2">
+        <div class="character-avatar flex-shrink-0" style="
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #05D9E8, #05D9E888);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25rem;
+        ">👤</div>
+        <div class="dialogue-bubble right" style="
+          background: #05D9E818; border-color: #05D9E830;
+        ">
+          <div class="dialogue-speaker" style="color: #05D9E8">...</div>
+          <div>「陛下已经没事了，他让我来请你进去。」</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene chapter-content" data-scene="scene-ch3-p10" data-emotion-idx="3" data-chapter="3">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #0D0221 100%);
+  "></div>
+  
+  <div class="relative z-10 max-w-2xl mx-auto px-4">
+    
+    <p class="reveal reveal-delay-1 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">李斯怔了一下，眼神里掠过一丝慌乱。</p>
+
+    <p class="reveal reveal-delay-2 my-8 text-center" style="
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FF2A6D;
+      font-family: var(--font-heading);
+      letter-spacing: 0.05em;
+    ">但</p>
+  </div>
+</section>
+
+<section class="scene chapter-cover" data-scene="scene-ending" data-emotion-idx="6" data-chapter="999">
+  <div class="absolute inset-0" style="
+    background: linear-gradient(180deg, #0D0221 0%, #0D0221 50%, #1A0B2E 100%);
+  "></div>
+  
+  <div class="relative z-10 text-center px-6 max-w-lg mx-auto">
+    <div class="reveal">
+      <p class="text-4xl mb-8">✦</p>
+    </div>
+    
+    <h2 class="reveal reveal-delay-1 text-2xl md:text-3xl font-bold mb-6" style="
+      font-family: var(--font-heading);
+      color: #D1D5DB;
+    ">
+      未完待续
+    </h2>
+    
+    <div class="reveal reveal-delay-2">
+      <p class="text-sm mb-2" style="color: #D1D5DB; opacity: 0.6">
+        秦始皇登月计划
+      </p>
+      <p class="text-xs mb-8" style="color: #D1D5DB; opacity: 0.4">
+        未知作者 · 悬疑
+      </p>
+    </div>
+    
+    <div class="reveal reveal-delay-3">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs" style="
+        background: #FF2A6D15;
+        color: #05D9E8;
+        border: 1px solid #FF2A6D30;
+      ">
+        <span>🎨</span>
+        <span>风格：深渊凝视</span>
+      </div>
+    </div>
+    
+    <div class="reveal reveal-delay-4 mt-12">
+      <p class="text-xs" style="color: #D1D5DB; opacity: 0.3">
+        由 知乎故事重塑工坊 生成
+      </p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- 右侧场景导航 -->
+<nav class="scene-nav" id="scene-nav">
+<div class="scene-nav-dot" data-scene-idx="0" onclick="goToScene(0)"></div>
+<div class="scene-nav-dot" data-scene-idx="1" onclick="goToScene(1)"></div>
+<div class="scene-nav-dot" data-scene-idx="2" onclick="goToScene(2)"></div>
+<div class="scene-nav-dot" data-scene-idx="3" onclick="goToScene(3)"></div>
+<div class="scene-nav-dot" data-scene-idx="4" onclick="goToScene(4)"></div>
+<div class="scene-nav-dot" data-scene-idx="5" onclick="goToScene(5)"></div>
+<div class="scene-nav-dot" data-scene-idx="6" onclick="goToScene(6)"></div>
+<div class="scene-nav-dot" data-scene-idx="7" onclick="goToScene(7)"></div>
+<div class="scene-nav-dot" data-scene-idx="8" onclick="goToScene(8)"></div>
+<div class="scene-nav-dot" data-scene-idx="9" onclick="goToScene(9)"></div>
+<div class="scene-nav-dot" data-scene-idx="10" onclick="goToScene(10)"></div>
+<div class="scene-nav-dot" data-scene-idx="11" onclick="goToScene(11)"></div>
+<div class="scene-nav-dot" data-scene-idx="12" onclick="goToScene(12)"></div>
+<div class="scene-nav-dot" data-scene-idx="13" onclick="goToScene(13)"></div>
+<div class="scene-nav-dot" data-scene-idx="14" onclick="goToScene(14)"></div>
+<div class="scene-nav-dot" data-scene-idx="15" onclick="goToScene(15)"></div>
+<div class="scene-nav-dot" data-scene-idx="16" onclick="goToScene(16)"></div>
+<div class="scene-nav-dot" data-scene-idx="17" onclick="goToScene(17)"></div>
+<div class="scene-nav-dot" data-scene-idx="18" onclick="goToScene(18)"></div>
+<div class="scene-nav-dot" data-scene-idx="19" onclick="goToScene(19)"></div>
+<div class="scene-nav-dot" data-scene-idx="20" onclick="goToScene(20)"></div>
+<div class="scene-nav-dot" data-scene-idx="21" onclick="goToScene(21)"></div>
+<div class="scene-nav-dot" data-scene-idx="22" onclick="goToScene(22)"></div>
+<div class="scene-nav-dot" data-scene-idx="23" onclick="goToScene(23)"></div>
+<div class="scene-nav-dot" data-scene-idx="24" onclick="goToScene(24)"></div>
+<div class="scene-nav-dot" data-scene-idx="25" onclick="goToScene(25)"></div>
+<div class="scene-nav-dot" data-scene-idx="26" onclick="goToScene(26)"></div>
+<div class="scene-nav-dot" data-scene-idx="27" onclick="goToScene(27)"></div>
+<div class="scene-nav-dot" data-scene-idx="28" onclick="goToScene(28)"></div>
+<div class="scene-nav-dot" data-scene-idx="29" onclick="goToScene(29)"></div>
+<div class="scene-nav-dot" data-scene-idx="30" onclick="goToScene(30)"></div>
+<div class="scene-nav-dot" data-scene-idx="31" onclick="goToScene(31)"></div>
+<div class="scene-nav-dot" data-scene-idx="32" onclick="goToScene(32)"></div>
+<div class="scene-nav-dot" data-scene-idx="33" onclick="goToScene(33)"></div>
+<div class="scene-nav-dot" data-scene-idx="34" onclick="goToScene(34)"></div>
+<div class="scene-nav-dot" data-scene-idx="35" onclick="goToScene(35)"></div>
+<div class="scene-nav-dot" data-scene-idx="36" onclick="goToScene(36)"></div>
+<div class="scene-nav-dot" data-scene-idx="37" onclick="goToScene(37)"></div>
+<div class="scene-nav-dot" data-scene-idx="38" onclick="goToScene(38)"></div>
+<div class="scene-nav-dot" data-scene-idx="39" onclick="goToScene(39)"></div>
+<div class="scene-nav-dot" data-scene-idx="40" onclick="goToScene(40)"></div>
+<div class="scene-nav-dot" data-scene-idx="41" onclick="goToScene(41)"></div>
+<div class="scene-nav-dot" data-scene-idx="42" onclick="goToScene(42)"></div>
+<div class="scene-nav-dot" data-scene-idx="43" onclick="goToScene(43)"></div>
+<div class="scene-nav-dot" data-scene-idx="44" onclick="goToScene(44)"></div>
+<div class="scene-nav-dot" data-scene-idx="45" onclick="goToScene(45)"></div>
+<div class="scene-nav-dot" data-scene-idx="46" onclick="goToScene(46)"></div>
+<div class="scene-nav-dot" data-scene-idx="47" onclick="goToScene(47)"></div>
+<div class="scene-nav-dot" data-scene-idx="48" onclick="goToScene(48)"></div>
+<div class="scene-nav-dot" data-scene-idx="49" onclick="goToScene(49)"></div>
+<div class="scene-nav-dot" data-scene-idx="50" onclick="goToScene(50)"></div>
+<div class="scene-nav-dot" data-scene-idx="51" onclick="goToScene(51)"></div>
+<div class="scene-nav-dot" data-scene-idx="52" onclick="goToScene(52)"></div>
+<div class="scene-nav-dot" data-scene-idx="53" onclick="goToScene(53)"></div>
+<div class="scene-nav-dot" data-scene-idx="54" onclick="goToScene(54)"></div>
+<div class="scene-nav-dot" data-scene-idx="55" onclick="goToScene(55)"></div>
+<div class="scene-nav-dot" data-scene-idx="56" onclick="goToScene(56)"></div>
+<div class="scene-nav-dot" data-scene-idx="57" onclick="goToScene(57)"></div>
+<div class="scene-nav-dot" data-scene-idx="58" onclick="goToScene(58)"></div>
+<div class="scene-nav-dot" data-scene-idx="59" onclick="goToScene(59)"></div>
+<div class="scene-nav-dot" data-scene-idx="60" onclick="goToScene(60)"></div>
+<div class="scene-nav-dot" data-scene-idx="61" onclick="goToScene(61)"></div>
+<div class="scene-nav-dot" data-scene-idx="62" onclick="goToScene(62)"></div>
+<div class="scene-nav-dot" data-scene-idx="63" onclick="goToScene(63)"></div>
+<div class="scene-nav-dot" data-scene-idx="64" onclick="goToScene(64)"></div>
+<div class="scene-nav-dot" data-scene-idx="65" onclick="goToScene(65)"></div>
+<div class="scene-nav-dot" data-scene-idx="66" onclick="goToScene(66)"></div>
+<div class="scene-nav-dot" data-scene-idx="67" onclick="goToScene(67)"></div>
+<div class="scene-nav-dot" data-scene-idx="68" onclick="goToScene(68)"></div>
+<div class="scene-nav-dot" data-scene-idx="69" onclick="goToScene(69)"></div>
+</nav>
+
+<!-- 底部情绪脉搏 -->
+<div class="emotion-pulse" id="emotion-pulse">
+  <svg viewBox="0 0 400 60" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#FF2A6D" stop-opacity="0.3"/>
+        <stop offset="50%" stop-color="#FF2A6D" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#FF2A6D" stop-opacity="0.3"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,21.2 L60,11.599999999999994 L120,6.799999999999997 L200,16.4 L280,2 L340,6.799999999999997 L400,2" fill="none" stroke="url(#pulseGrad)" stroke-width="2" stroke-linecap="round"/>
+    <circle id="pulseCursor" cx="0" cy="30" r="4" fill="#FF2A6D" class="emotion-pulse-cursor"/>
+  </svg>
+</div>
+
+<!-- TTS 播放器 -->
+<div class="tts-player" id="tts-player" style="display: none;">
+  <button class="tts-btn" id="tts-toggle" onclick="toggleTTS()">▶</button>
+  <input type="range" class="tts-progress" id="tts-progress" min="0" max="100" value="0" oninput="seekTTS(this.value)">
+  <span class="text-xs text-white/60" id="tts-label">朗读</span>
+</div>
+
+<script>
+// ===== 场景数据 =====
+const CHARACTERS = [{"id":"protagonist","name":"穿越者（第一人称“我”）","role":"protagonist","traits":["机智","果断","善用系统"],"arc":"从意外穿越到赢得秦始皇信任，开启登月计划。","visual_symbol":"系统界面","color":"#05D9E8","emoji":"💻"},{"id":"antagonist","name":"秦始皇","role":"protagonist","traits":["威严","多疑","雄才大略"],"arc":"从濒死帝王到重燃征服世界与星辰的野心。","visual_symbol":"紫黑色绣龙华服","color":"#A78BFA","emoji":"🐉"},{"id":"char_1","name":"李斯","role":"antagonist","traits":["警惕","忠诚","固执"],"arc":"从敌视穿越者到被迫接受其存在。","visual_symbol":"黑色官服与佩剑","color":"#DC2626","emoji":"⚔️"}];
+const EMOTION_CURVE = [{"position":0,"intensity":0.6,"valence":0.2,"arousal":0.7,"emotion":"excitement"},{"position":15,"intensity":0.8,"valence":-0.5,"arousal":0.9,"emotion":"frustration"},{"position":30,"intensity":0.9,"valence":-0.7,"arousal":1,"emotion":"fear"},{"position":50,"intensity":0.7,"valence":0.1,"arousal":0.6,"emotion":"hope"},{"position":70,"intensity":1,"valence":0.8,"arousal":0.9,"emotion":"joy"},{"position":85,"intensity":0.9,"valence":0.9,"arousal":0.8,"emotion":"awe"},{"position":100,"intensity":1,"valence":1,"arousal":0.7,"emotion":"ambition"}];
+const SCENE_DATA = [{"id":"scene-cover","type":"cover","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.6,"valence":0.2,"arousal":0.7}},{"id":"scene-char-protagonist","type":"character_card","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.4,"valence":0,"arousal":0.3}},{"id":"scene-char-antagonist","type":"character_card","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.4,"valence":0,"arousal":0.3}},{"id":"scene-ch0-cover","type":"chapter_title","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p0","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p3","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p6","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p9","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p12","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p15","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p18","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p21","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p24","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p27","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p30","type":"dialogue","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p33","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p36","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch0-p39","type":"narrative","chapterIndex":0,"emotion":{"keyframeRef":0,"intensity":0.7,"valence":0.3,"arousal":0.8}},{"id":"scene-ch1-cover","type":"chapter_title","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p0","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p3","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p6","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p9","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p12","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p15","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p18","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p21","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p24","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p27","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p30","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p33","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p36","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p39","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p42","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p45","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p48","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p51","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p54","type":"dialogue","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p57","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p60","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch1-p63","type":"narrative","chapterIndex":1,"emotion":{"keyframeRef":1,"intensity":0.8,"valence":-0.2,"arousal":0.9}},{"id":"scene-ch2-cover","type":"chapter_title","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p0","type":"emotion_peak","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p2","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p4","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p6","type":"narrative","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p8","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p10","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p12","type":"narrative","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p14","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p16","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p18","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p20","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p22","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p24","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p26","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p28","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p30","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p32","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p34","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p36","type":"dialogue","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch2-p38","type":"narrative","chapterIndex":2,"emotion":{"keyframeRef":2,"intensity":0.9,"valence":0.7,"arousal":0.8}},{"id":"scene-ch3-cover","type":"chapter_title","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p0","type":"emotion_peak","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p2","type":"dialogue","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p4","type":"dialogue","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p6","type":"dialogue","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p8","type":"dialogue","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ch3-p10","type":"narrative","chapterIndex":3,"emotion":{"keyframeRef":3,"intensity":1,"valence":0.9,"arousal":0.7}},{"id":"scene-ending","type":"ending","chapterIndex":4,"emotion":{"keyframeRef":6,"intensity":1,"valence":1,"arousal":0.7}}];
+
+// ===== 场景控制器 =====
+class SceneController {
+  constructor() {
+    this.scenes = document.querySelectorAll('.scene');
+    this.navDots = document.querySelectorAll('.scene-nav-dot');
+    this.currentScene = 0;
+    this.isScrolling = false;
+    this.scrollTimeout = null;
+    this.init();
+  }
+
+  init() {
+    // 滚轮事件（节流）
+    window.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
+    
+    // 键盘导航
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        this.nextScene();
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.prevScene();
+      }
+    });
+    
+    // 触摸支持
+    let touchStartY = 0;
+    window.addEventListener('touchstart', e => touchStartY = e.touches[0].clientY, { passive: true });
+    window.addEventListener('touchend', e => {
+      const diff = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(diff) > 60) {
+        diff > 0 ? this.nextScene() : this.prevScene();
+      }
+    }, { passive: true });
+    
+    // IntersectionObserver 用于检测当前场景 + 段落揭示
+    this.setupObservers();
+    
+    // 初始状态
+    this.updateNav(0);
+    this.updateEmotionState(0);
+  }
+
+  handleWheel(e) {
+    e.preventDefault();
+    if (this.isScrolling) return;
+    
+    const delta = e.deltaY;
+    const threshold = 30;
+    
+    if (delta > threshold) {
+      this.isScrolling = true;
+      this.nextScene();
+      setTimeout(() => { this.isScrolling = false; }, 800);
+    } else if (delta < -threshold) {
+      this.isScrolling = true;
+      this.prevScene();
+      setTimeout(() => { this.isScrolling = false; }, 800);
+    }
+  }
+
+  nextScene() {
+    if (this.currentScene < this.scenes.length - 1) {
+      this.goToScene(this.currentScene + 1);
+    }
+  }
+
+  prevScene() {
+    if (this.currentScene > 0) {
+      this.goToScene(this.currentScene - 1);
+    }
+  }
+
+  goToScene(index) {
+    if (index < 0 || index >= this.scenes.length) return;
+    
+    const target = this.scenes[index];
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.currentScene = index;
+    this.updateNav(index);
+    this.updateEmotionState(index);
+    
+    // 同步 TTS
+    if (window.ttsPlayer && window.ttsPlayer.isPlaying) {
+      window.ttsPlayer.onSceneChange(index);
+    }
+  }
+
+  setupObservers() {
+    // 场景级 IntersectionObserver
+    const sceneObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const idx = Array.from(this.scenes).indexOf(entry.target);
+          if (idx !== this.currentScene) {
+            this.currentScene = idx;
+            this.updateNav(idx);
+            this.updateEmotionState(idx);
+          }
+        }
+      });
+    }, { threshold: [0.5] });
+
+    this.scenes.forEach(s => sceneObserver.observe(s));
+
+    // 段落级 reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  }
+
+  updateNav(index) {
+    this.navDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  updateEmotionState(index) {
+    const scene = SCENE_DATA[index];
+    if (!scene) return;
+    
+    const kf = EMOTION_CURVE[scene.emotion.keyframeRef] || scene.emotion;
+    
+    // 更新 CSS 变量
+    document.documentElement.style.setProperty('--current-intensity', kf.intensity);
+    document.documentElement.style.setProperty('--current-valence', kf.valence);
+    document.documentElement.style.setProperty('--current-arousal', kf.arousal);
+    
+    // 更新情绪脉搏光标
+    const cursor = document.getElementById('pulseCursor');
+    if (cursor) {
+      const progress = (index / (this.scenes.length - 1)) * 400;
+      cursor.setAttribute('cx', progress);
+    }
+  }
+}
+
+// ===== TTS 播放器 =====
+class TTSPlayer {
+  constructor() {
+    this.audio = new Audio();
+    this.isPlaying = false;
+    this.currentScene = 0;
+    this.sceneAudioMap = {}; // sceneIndex -> audioUrl
+    this.init();
+  }
+
+  init() {
+    this.audio.onplay = () => {
+      this.isPlaying = true;
+      document.getElementById('tts-toggle').innerHTML = '⏸';
+      document.getElementById('tts-label').textContent = '播放中';
+    };
+    
+    this.audio.onpause = () => {
+      this.isPlaying = false;
+      document.getElementById('tts-toggle').innerHTML = '▶';
+      document.getElementById('tts-label').textContent = '朗读';
+    };
+    
+    this.audio.onended = () => {
+      this.isPlaying = false;
+      document.getElementById('tts-toggle').innerHTML = '▶';
+      // 自动播放下一场景
+      if (this.currentScene < SCENE_DATA.length - 1) {
+        setTimeout(() => {
+          window.sceneController.nextScene();
+          this.playScene(this.currentScene + 1);
+        }, 500);
+      }
+    };
+    
+    this.audio.ontimeupdate = () => {
+      if (this.audio.duration) {
+        const progress = (this.audio.currentTime / this.audio.duration) * 100;
+        document.getElementById('tts-progress').value = progress;
+      }
+    };
+  }
+
+  setAudioMap(map) {
+    this.sceneAudioMap = map;
+    document.getElementById('tts-player').style.display = 'flex';
+  }
+
+  toggle() {
+    if (this.isPlaying) {
+      this.audio.pause();
+    } else {
+      this.playScene(window.sceneController.currentScene);
+    }
+  }
+
+  playScene(sceneIndex) {
+    const url = this.sceneAudioMap[sceneIndex];
+    if (!url) return;
+    
+    this.currentScene = sceneIndex;
+    this.audio.src = url;
+    this.audio.play().catch(e => console.log('TTS play failed:', e));
+  }
+
+  onSceneChange(sceneIndex) {
+    if (!this.isPlaying) return;
+    // 如果场景有对应的音频，自动切换
+    if (this.sceneAudioMap[sceneIndex]) {
+      this.playScene(sceneIndex);
+    }
+  }
+
+  seek(percent) {
+    if (this.audio.duration) {
+      this.audio.currentTime = (percent / 100) * this.audio.duration;
+    }
+  }
+}
+
+// ===== 角色卡片交互 =====
+function toggleCharacterCard(header) {
+  const body = header.nextElementSibling;
+  if (body) {
+    body.classList.toggle('expanded');
+  }
+}
+
+// ===== 全局函数 =====
+function goToScene(index) {
+  window.sceneController.goToScene(index);
+}
+
+function toggleTTS() {
+  window.ttsPlayer.toggle();
+}
+
+function seekTTS(value) {
+  window.ttsPlayer.seek(value);
+}
+
+// ===== 初始化 =====
+window.sceneController = new SceneController();
+window.ttsPlayer = new TTSPlayer();
+
+// 如果存在预加载的 TTS 音频映射
+if (window.PRELOADED_TTS_MAP) {
+  window.ttsPlayer.setAudioMap(window.PRELOADED_TTS_MAP);
+}
+</script>
+
+</body>
+</html>

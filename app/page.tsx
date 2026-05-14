@@ -250,32 +250,49 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {stories.map((story: any) => (
-            <button
+            <div
               key={story.id}
-              onClick={() => fillExample(story.content)}
-              className="text-left p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/30 transition group"
+              className="text-left p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-purple-500/30 transition group relative"
             >
-              <h3 className="font-semibold text-white mb-2 group-hover:text-purple-300 transition">
-                {story.title}
-              </h3>
-              <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                {story.description}
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {story.tags.slice(0, 3).map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-0.5 rounded-md bg-white/5 text-xs text-gray-500"
+              <button
+                onClick={() => fillExample(story.content)}
+                className="w-full text-left"
+              >
+                <h3 className="font-semibold text-white mb-2 group-hover:text-purple-300 transition">
+                  {story.title}
+                </h3>
+                <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                  {story.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {story.tags.slice(0, 3).map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 rounded-md bg-white/5 text-xs text-gray-500"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </button>
+              <div className="flex items-center justify-between mt-3">
+                <span className="flex items-center gap-1 text-purple-400 text-sm opacity-0 group-hover:opacity-100 transition">
+                  <span>点击填充</span>
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+                {story.id === "1644038836790169600" && (
+                  <a
+                    href="/examples/repage-1778669394194.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-xs text-cyan-400 hover:text-cyan-300 underline underline-offset-2 opacity-0 group-hover:opacity-100 transition"
                   >
-                    {tag}
-                  </span>
-                ))}
+                    预览效果 →
+                  </a>
+                )}
               </div>
-              <div className="flex items-center gap-1 mt-3 text-purple-400 text-sm opacity-0 group-hover:opacity-100 transition">
-                <span>点击填充</span>
-                <ArrowRight className="w-3 h-3" />
-              </div>
-            </button>
+            </div>
           ))}
         </div>
       </div>
