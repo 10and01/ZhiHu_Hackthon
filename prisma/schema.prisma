@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  zhihuUid      String   @unique
+  screenName    String
+  avatarUrl     String?
+  profileUrl    String?
+  createdAt     DateTime @default(now())
+  works         Work[]
+  likes         Like[]
+}
+
+model Work {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  title         String
+  sourceUrl     String?
+  htmlCode      String
+  metaJson      String   @default("{}")
+  isPublic      Boolean  @default(false)
+  viewCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  likes         Like[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  workId    String
+  work      Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([workId, userId])
+}
