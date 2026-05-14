@@ -71,7 +71,8 @@ export async function getAccessToken(
   expires_in: number;
 }> {
   const appId = process.env.ZHIHU_APP_ID || "";
-  const appKey = process.env.ZHIHU_APP_KEY || "";
+  // 兼容两种命名：ZHIHU_APP_KEY（知乎开放平台）或 ZHIHU_APP_SECRET（NextAuth 习惯）
+  const appKey = process.env.ZHIHU_APP_KEY || process.env.ZHIHU_APP_SECRET || "";
   const redirectUri = process.env.ZHIHU_REDIRECT_URI || "";
 
   const body = new URLSearchParams({

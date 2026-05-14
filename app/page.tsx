@@ -27,11 +27,8 @@ export default function Home() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      signIn("zhihu");
-    }
-  }, [status]);
+  // 不再自动跳转，改为显示登录按钮让用户主动点击
+  // 避免 NextAuth 构造包含 client_id/state 的授权 URL
 
   const handleGenerate = async () => {
     if (!input.trim() || loading) return;
@@ -223,10 +220,24 @@ export default function Home() {
           </div>
         </>
       ) : (
-        /* 未登录状态：自动跳转中 */
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
-          <span className="ml-3 text-gray-400">正在跳转知乎登录...</span>
+        /* 未登录状态：显示登录入口 */
+        <div className="max-w-xl mx-auto text-center">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-10">
+            <LogIn className="w-12 h-12 text-purple-400 mx-auto mb-6" />
+            <h2 className="text-2xl font-bold text-white mb-3">
+              登录后即可使用
+            </h2>
+            <p className="text-gray-400 mb-8">
+              使用知乎账号一键登录，开始创作你的沉浸式故事体验
+            </p>
+            <a
+              href="/api/auth/zhihu/authorize"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium transition"
+            >
+              <LogIn className="w-5 h-5" />
+              知乎账号登录
+            </a>
+          </div>
         </div>
       )}
 
