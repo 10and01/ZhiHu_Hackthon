@@ -136,9 +136,9 @@ const mockPrisma = {
     delete: async ({ where }: any) => {
       memoryStore.works.delete(where.id);
       // 同时删除相关点赞
-      for (const [key, like] of memoryStore.likes) {
+      memoryStore.likes.forEach((like, key) => {
         if (like.workId === where.id) memoryStore.likes.delete(key);
-      }
+      });
       return {};
     },
     count: async ({ where }: any = {}) => {
