@@ -39,6 +39,26 @@ export async function POST(req: NextRequest) {
 
     // 阶段 1-3: 分析 → 分镜 → 渲染 HTML
     const result = await generateHtml(content, apiKey, provider, userMode);
+    console.log("[API Generate] result keys:", Object.keys(result || {}));
+    console.log("[API Generate] htmlCode type:", typeof result?.htmlCode, "length:", result?.htmlCode?.length);
+
+    if (!result || typeof result.htmlCode !== "string" || result.htmlCode.length === 0) {
+      console.error("[API Generate] htmlCode missing or invalid, falling back to demo");
+      // 降级：返回演示模板
+      const { preprocessContent } = await import("@/lib/pipeline/shared");
+      const { title, author, paragraphs } = preprocessContent(content);
+      const safeTitle = title.replace(/["']/g, "");
+      const demoHtml = `<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>${safeTitle}</title>
+<style>body{font-family:serif;background:#1a1a2e;color:#eee;padding:2rem;line-height:1.8;max-width:700px;margin:0 auto;}</style>
+</head><body><h1>${safeTitle}</h1><p>作者：${author}</p><hr/>${paragraphs.slice(0,20).map(p=>`<p>${p}</p>`).join("")}</body></html>`;
+      return NextResponse.json({
+        htmlCode: demoHtml,
+        metaJson: { title, author, genre: "演示", estimated_reading_time: 5, total_word_count: content.length },
+        sceneList: [],
+        mode: userMode || "story",
+      });
+    }
 
     // 阶段 4: 生成 TTS（异步，失败不影响主流程）
     let ttsUrls: Record<string, string> = {};
